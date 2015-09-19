@@ -1,0 +1,5 @@
+name: gnatsd
+dependencies:
+  - golang1.3
+files:
+  - gnatsd/**/*.go

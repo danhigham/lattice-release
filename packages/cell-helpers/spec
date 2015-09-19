@@ -1,0 +1,11 @@
+---
+name: cell-helpers
+
+dependencies:
+  - golang1.4
+
+files:
+  - lattice/cell-helpers/tee2metron/main.go
+  - lattice/cell-helpers/tee2metron/main_test.go
+  - lattice/cell-helpers/tee2metron/tee2metron_suite_test.go
+  - lattice/cell-helpers/tee2metron/test_helpers/chatty_process/main.go

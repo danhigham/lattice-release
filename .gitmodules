@@ -1,0 +1,9 @@
+[submodule "src/lattice"]
+	path = src/lattice
+	url = https://github.com/cloudfoundry-incubator/lattice.git
+[submodule "src/loggregator"]
+	path = src/loggregator
+	url = https://github.com/cloudfoundry/loggregator.git
+[submodule "src/garden-linux-release"]
+	path = src/garden-linux-release
+	url = https://github.com/cloudfoundry-incubator/garden-linux-release.git

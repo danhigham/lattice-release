@@ -1,0 +1,151 @@
+#!/bin/bash -e
+# vim: set ft=sh
+
+LOG_DIR=/var/vcap/sys/log/consul_agent
+RUN_DIR=/var/vcap/sys/run/consul_agent
+DATA_DIR=/var/vcap/store/consul_agent
+CONF_DIR=/var/vcap/jobs/consul_agent/config
+
+PKG=/var/vcap/packages/consul
+
+PID_FILE=$RUN_DIR/consul_agent.pid
+NODE_NAME='<%="#{name.gsub('_', '-')}-#{spec.index}"%>'
+
+source /var/vcap/packages/common/utils.sh
+
+mkdir -p /var/vcap/sys/log/monit
+exec 1>> /var/vcap/sys/log/monit/consul_agent.out.log
+exec 2>> /var/vcap/sys/log/monit/consul_agent.err.log
+
+case $1 in
+  start)
+
+    pid_guard ${PIDFILE} "consul_agent"
+
+    mkdir -p $LOG_DIR
+    chown -R vcap:vcap $LOG_DIR
+
+    mkdir -p $RUN_DIR
+    chown -R vcap:vcap $RUN_DIR
+
+    mkdir -p $DATA_DIR
+    chown -R vcap:vcap $DATA_DIR
+
+    <% p("consul.agent.services").each do |service_name, service| %>
+    cat > $CONF_DIR/service-<%= service_name %>.json <<EOF
+<%=
+{
+  "service" => {
+    "name" => service_name.tr('_', '-'),
+    "check" => {
+      "script" => "/var/vcap/jobs/#{service_name}/bin/dns_health_check",
+      "interval" => "3s"
+    },
+    "tags" => ["#{name.gsub('_', '-')}-#{spec.index}"]
+  }.merge(service)
+}.to_json
+%>
+EOF
+    <% end %>
+
+    # "Consul uses a significant amount of virtual memory, since LMDB uses
+    # mmap() underneath. It uses about 700MB of a 32bit system and 40GB on a
+    # 64bit system."
+    #
+    # this mainly applies to bosh-lite
+    ulimit -v unlimited
+
+    # add consul agent's dns to resolv.conf
+    #
+    # /etc/resolv.conf will probably be regenerated all the time, so add the
+    # local dns server to /head, which will be prepended when regenerated.
+    echo 'nameserver 127.0.0.1' > /etc/resolvconf/resolv.conf.d/head
+
+    if resolvconf --updates-are-enabled; then
+      resolvconf -u
+    else
+      # updates are disabled in bosh-lite; in this case just add to
+      # /etc/resolv.conf directly.
+      #
+      # enabling updates and then updating it with resolvconf -u seems to add
+      # dns entries from where the box was generated.
+      if ! grep -q 127.0.0.1 /etc/resolv.conf; then
+        sed -i -e '1i nameserver 127.0.0.1' /etc/resolv.conf
+      fi
+    fi
+
+    expected=<%=p("consul.agent.servers.lan").size%>
+    consul_join="<%=p("consul.agent.servers.lan").join(' ')%>"
+    server=<%=p("consul.agent.mode") == "server"%>
+    if [ "$server" == "true" ]; then
+      actual=0
+      for s in ${consul_join}; do
+        if nc -w 1 $s 8300 < /dev/null; then
+          actual=$((actual + 1))
+        fi
+      done
+    fi
+
+    setcap cap_net_bind_service=+ep $PKG/bin/consul
+
+    GOMAXPROCS=$(nproc)
+    if [ "$GOMAXPROCS" = "1" ]; then
+      GOMAXPROCS=2
+    fi
+
+    export GOMAXPROCS
+
+    chpst -u vcap:vcap $PKG/bin/consul agent \
+      -config-dir=$CONF_DIR \
+      2> >(tee -a ${LOG_DIR}/consul_agent.stderr.log | logger -p user.error -t vcap.consul-agent) \
+      1> >(tee -a ${LOG_DIR}/consul_agent.stdout.log | logger -p user.info  -t vcap.consul-agent) &
+
+    consul_pid=$!
+
+    echo "Consul pid is " + $consul_pid
+
+    start=0
+    if [ $expected -gt 0 ]; then
+      for i in $(seq <%= p("consul.agent.sync_timeout_in_seconds") %>); do
+        echo "$(date)" "Attempting join: ${consul_join}"
+        if $PKG/bin/consul join ${consul_join}; then
+          break
+        fi
+
+        sleep 1
+        start=$((start + 1))
+      done
+    fi
+
+    if [[ "$server" == "true" && $actual -eq $((expected - 1)) ]]; then
+      synced=false
+      for i in $(seq $start <%= p("consul.agent.sync_timeout_in_seconds") %>); do
+        if curl -s 'http://127.0.0.1:8500/v1/health/service/consul' | grep -oP "\{\"Node\":\"$NODE_NAME\".*?}]" | grep '"Tags":\[\]'; then
+          synced=true
+          break
+        fi
+        sleep 1
+      done
+
+      if ${synced}; then
+        echo "$(date) Consul is synced"
+      else
+        echo "$(date) Consul failed to sync"
+        $PKG/bin/consul leave
+        kill -9 ${consul_pid}
+        exit 1
+      fi
+    fi
+
+    echo ${consul_pid} > $PID_FILE
+
+    ;;
+
+  stop)
+    $PKG/bin/consul leave
+    ;;
+
+  *)
+    echo "Usage: $0 {start|stop}"
+    ;;
+esac
