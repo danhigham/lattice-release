@@ -7,3 +7,9 @@
 [submodule "src/garden-linux-release"]
 	path = src/garden-linux-release
 	url = https://github.com/cloudfoundry-incubator/garden-linux-release.git
+[submodule "src/gnatsd"]
+	path = src/gnatsd
+	url = https://github.com/nats-io/gnatsd
+[submodule "src/github.com/cloudfoundry/gorouter"]
+	path = src/github.com/cloudfoundry/gorouter
+	url = https://github.com/cloudfoundry/gorouter
