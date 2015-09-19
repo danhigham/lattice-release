@@ -97,6 +97,7 @@ case $1 in
     export PATH=/var/vcap/packages/iptables/sbin:$PATH
     export PATH=/var/vcap/packages/btrfs-progs/bin:$PATH
 		export PATH=/var/vcap/packages/cell-helpers/bin:$PATH
+		export PATH=/var/vcap/packages/garden-linux/bin:$PATH
 
     mkdir -p /var/vcap/data/garden/depot
 
@@ -152,7 +153,7 @@ case $1 in
     chmod go-rx $graph_path
 
 		exec tee2metron -dropsondeDestination=127.0.0.1:3457 -sourceInstance=$LATTICE_CELL_ID \
-    	/var/vcap/packages/garden-linux/bin/garden-linux \
+    	garden-linux \
       -depot=/var/vcap/data/garden/depot \
       -snapshots="${snapshots_path}" \
       -graph=$graph_path \

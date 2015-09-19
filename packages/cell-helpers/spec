@@ -9,3 +9,8 @@ files:
   - lattice/cell-helpers/tee2metron/main_test.go
   - lattice/cell-helpers/tee2metron/tee2metron_suite_test.go
   - lattice/cell-helpers/tee2metron/test_helpers/chatty_process/main.go
+
+  - github.com/cloudfoundry/dropsonde/**/*
+  - github.com/cloudfoundry/gosteno/**/*
+  - github.com/gogo/protobuf/**/*
+  - github.com/nu7hatch/**/*

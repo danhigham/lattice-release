@@ -13,3 +13,6 @@
 [submodule "src/github.com/cloudfoundry/gorouter"]
 	path = src/github.com/cloudfoundry/gorouter
 	url = https://github.com/cloudfoundry/gorouter
+[submodule "src/github.com/cloudfoundry-incubator/rep"]
+	path = src/github.com/cloudfoundry-incubator/rep
+	url = https://github.com/cloudfoundry-incubator/rep

@@ -1,0 +1,13 @@
+check process rep
+  with pidfile /var/vcap/sys/run/rep/rep.pid
+  start program "/var/vcap/jobs/rep/bin/rep_ctl start"
+  stop program "/var/vcap/jobs/rep/bin/rep_ctl stop"
+  group vcap
+  depends on <%= spec['job']['templates'].inject([]) do | deps, template |
+		case template.name
+		when 'garden' then deps.push(template.name)
+		when 'rootfses' then deps.push(template.name)
+		end
+		deps
+	end.join(',')
+%>
