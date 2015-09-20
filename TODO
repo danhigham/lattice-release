@@ -1,6 +1,4 @@
-Create package for tee2metron
-
-Fork garden-linux and pull in to src
-    - start garden with tee2metron
-
+Add ssh_proxy
+Build errand to copy helper tgzs to file_server
+Patch ltc to accept internal domain other than dc1.consul
 Address scaling of ETCD

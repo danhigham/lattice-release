@@ -1,0 +1,8 @@
+---
+name: ltc_assets
+
+dependencies:
+
+files:
+  - ltc-assets/healthcheck.tgz
+  - ltc-assets/lattice-cell-helpers.tgz

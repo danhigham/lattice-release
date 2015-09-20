@@ -1,0 +1,12 @@
+---
+name: copy_ltc_assets
+
+templates:
+  run.erb: bin/run
+
+packages:
+  - ltc_assets
+
+properties:
+  lattice.assets.file_server:
+    description: "URL for file_server"
