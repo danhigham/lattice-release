@@ -16,3 +16,6 @@
 [submodule "src/github.com/cloudfoundry-incubator/rep"]
 	path = src/github.com/cloudfoundry-incubator/rep
 	url = https://github.com/cloudfoundry-incubator/rep
+[submodule "src/diego-release"]
+	path = src/diego-release
+	url = https://github.com/cloudfoundry-incubator/diego-release.git

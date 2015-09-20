@@ -1,12 +1,12 @@
+
 set -e
 
 mkdir -p ${BOSH_INSTALL_TARGET}/src
 cp -a . ${BOSH_INSTALL_TARGET}/src
-
-mv ${BOSH_INSTALL_TARGET}/src/github.com/gogo/protobuf_for_rep \
-  ${BOSH_INSTALL_TARGET}/src/github.com/gogo/protobuf
-
 export GOPATH=$BOSH_INSTALL_TARGET
+
+mv ${BOSH_INSTALL_TARGET}/src/diego-release/src/github.com \
+  ${BOSH_INSTALL_TARGET}/src/github.com
 
 export GOROOT=$(readlink -nf /var/vcap/packages/golang_1.4)
 export PATH=$GOROOT/bin:$PATH

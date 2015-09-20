@@ -1,0 +1,138 @@
+---
+packages:
+- name: btrfs-progs
+  version: 71889c437be1137b98aa094a52e664cfe8e36cd3
+  fingerprint: 71889c437be1137b98aa094a52e664cfe8e36cd3
+  sha1: c6af07435fb0636a2826125b18a6155d895b863d
+  dependencies: []
+- name: busybox
+  version: 1593c41beb57c12d7f2b82dff61b47d4d119913d
+  fingerprint: 1593c41beb57c12d7f2b82dff61b47d4d119913d
+  sha1: 7887343d142830abe2b6f0064affc66ac36175bf
+  dependencies: []
+- name: cell-helpers
+  version: f08c3754ee89c8ee5b4ecc029716732905bc7cef
+  fingerprint: f08c3754ee89c8ee5b4ecc029716732905bc7cef
+  sha1: 66e2134fb247dc3db82f80a43c2e5747d86b3769
+  dependencies:
+  - golang1.4
+- name: common
+  version: e401816a4748292163679fafcbd8f818ed8154a5
+  fingerprint: e401816a4748292163679fafcbd8f818ed8154a5
+  sha1: 340a08b6ebc7e7a57a35f8f09112cc62c008fa29
+  dependencies: []
+- name: consul
+  version: 457b91d3f865aa366e12fe304e95aaf5abd93a0f
+  fingerprint: 457b91d3f865aa366e12fe304e95aaf5abd93a0f
+  sha1: 6bc3c9d248fe5efbdfdb43b77dabf6b9ced24277
+  dependencies: []
+- name: doppler
+  version: 52ae0cb3233bbc01b5fb26efcf6936d68bda88d7
+  fingerprint: 52ae0cb3233bbc01b5fb26efcf6936d68bda88d7
+  sha1: 308c16e7e020a3eca0cc0598d79a843d9478877f
+  dependencies:
+  - golang1.4
+- name: garden-linux
+  version: ec4003bc6a0fb31fd96b0d163bd95adb3ff3ba39
+  fingerprint: ec4003bc6a0fb31fd96b0d163bd95adb3ff3ba39
+  sha1: e1d5aa4cc30da743d53ec593cfb3abe258f3b066
+  dependencies:
+  - btrfs-progs
+  - golang_1.4
+- name: gnatsd
+  version: 3bc13725446b4dbf7108435f14557913be370924
+  fingerprint: 3bc13725446b4dbf7108435f14557913be370924
+  sha1: 3d533debbb5ed3a8775e6300330d7113826c7662
+  dependencies:
+  - golang1.3
+- name: golang1.3
+  version: e4b65bcb478d9bea1f9c92042346539713551a4a
+  fingerprint: e4b65bcb478d9bea1f9c92042346539713551a4a
+  sha1: 29392c9ec14839a457e8eb6f49b6359e85ed01c9
+  dependencies: []
+- name: golang1.4
+  version: f57ddbc8d55d7a0f08775bf76bb6a27dc98c7ea7
+  fingerprint: f57ddbc8d55d7a0f08775bf76bb6a27dc98c7ea7
+  sha1: 625efd4668a41dac2e3f1d226f56841563e8aaf8
+  dependencies: []
+- name: golang_1.4
+  version: f57ddbc8d55d7a0f08775bf76bb6a27dc98c7ea7
+  fingerprint: f57ddbc8d55d7a0f08775bf76bb6a27dc98c7ea7
+  sha1: 6bb04e07aa4d4c464d052606f6abb8a17821161c
+  dependencies: []
+- name: gorouter
+  version: 5667852a80d951016a0c637f02a0432f0cfec24b
+  fingerprint: 5667852a80d951016a0c637f02a0432f0cfec24b
+  sha1: 97b5aa2c55b42e7753faa17fd93caf2223a67483
+  dependencies:
+  - golang1.4
+- name: iptables
+  version: 7226d311e90f49b05287e79f339581a1de9ea82e
+  fingerprint: 7226d311e90f49b05287e79f339581a1de9ea82e
+  sha1: af6c112264cbb27cf67623f098c06bb1805295f6
+  dependencies: []
+- name: loggregator_trafficcontroller
+  version: a68cf62072d3fa4b84622ff936d9c6625f90427c
+  fingerprint: a68cf62072d3fa4b84622ff936d9c6625f90427c
+  sha1: 065294dca8b9143ed1ab7c71a7add3918ba3fde2
+  dependencies:
+  - golang1.4
+- name: metron_agent
+  version: e5abf3fd8d6a5cd49d0609a4d518bcdfdff0c212
+  fingerprint: e5abf3fd8d6a5cd49d0609a4d518bcdfdff0c212
+  sha1: 4c0dbd0e5b93d02de2f84763564dd07dba42e48b
+  dependencies:
+  - golang1.4
+- name: pid_utils
+  version: 81f185e4c02f2e4cb7b73a8f243d1918c6408e50
+  fingerprint: 81f185e4c02f2e4cb7b73a8f243d1918c6408e50
+  sha1: 17e9a97bbdc5e83ddd00f433f38127378843798d
+  dependencies: []
+- name: rep
+  version: fceeacf5f2b04ba987118cbeae38955a6e14888d
+  fingerprint: fceeacf5f2b04ba987118cbeae38955a6e14888d
+  sha1: 6d4e79e79d8878bedee8a4b79495d8243de089c0
+  dependencies:
+  - golang_1.4
+- name: shadow
+  version: ffd1741bd9e0a176e67c61ef70cd0ed76b0ec285
+  fingerprint: ffd1741bd9e0a176e67c61ef70cd0ed76b0ec285
+  sha1: ea627407a001d2d112b31a1de112952de30bca77
+  dependencies: []
+jobs:
+- name: consul_agent
+  version: 2b00a9f36beace4a0e47d9c602b75771e5049eda
+  fingerprint: 2b00a9f36beace4a0e47d9c602b75771e5049eda
+  sha1: e41888803f40f748339406df49a9cc8837b43e20
+- name: doppler
+  version: dcc9c3f03fc70e59188cdccca756b48ea9f52299
+  fingerprint: dcc9c3f03fc70e59188cdccca756b48ea9f52299
+  sha1: ed8385f914bb865152ee60266e0a3ba84b8281b2
+- name: garden
+  version: d16c503dc1b382f96413ee97b73bf3e5469be298
+  fingerprint: d16c503dc1b382f96413ee97b73bf3e5469be298
+  sha1: 3d112c186c425c955ef4194d20372b364a4703cf
+- name: gorouter
+  version: cf0ef7c10205dc33b4e5e2408389ae870c44a75a
+  fingerprint: cf0ef7c10205dc33b4e5e2408389ae870c44a75a
+  sha1: 101aa7b5c8ef077d2567a6307935a2f52ab422cc
+- name: loggregator_trafficcontroller
+  version: 449d8dc28ded09850215930bc04c76e99368fffd
+  fingerprint: 449d8dc28ded09850215930bc04c76e99368fffd
+  sha1: f095d4ce5527472a0af21ee7d694feae57881a41
+- name: metron_agent
+  version: a83478bbac63b876d891d43c06d8004b79a556e9
+  fingerprint: a83478bbac63b876d891d43c06d8004b79a556e9
+  sha1: 1577cc6779a4e4f63ae79136f047ac44a2e8cf42
+- name: nats
+  version: e876b9d381cb9f24771983000ec70a6d938118c8
+  fingerprint: e876b9d381cb9f24771983000ec70a6d938118c8
+  sha1: fea24bd7ed05afa85f7c2651ceeebcfa8bde9681
+- name: rep
+  version: 740bef851d0809d971672691bfe0f852f558688f
+  fingerprint: 740bef851d0809d971672691bfe0f852f558688f
+  sha1: 9619d71550534f9846b592db2b0b40ac47b19289
+commit_hash: 7c8d9659
+uncommitted_changes: true
+name: lattice
+version: 0+dev.23
