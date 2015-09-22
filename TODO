@@ -1,4 +1,4 @@
-Add ssh_proxy
-Build errand to copy helper tgzs to file_server
-Patch ltc to accept internal domain other than dc1.consul
-Address scaling of ETCD
+Get ltc test suit to run
+Setup blob store for proper release
+Template manifests
+SSL compatibility?

@@ -6,3 +6,4 @@ dependencies:
 files:
   - ltc-assets/healthcheck.tgz
   - ltc-assets/lattice-cell-helpers.tgz
+  - ltc-assets/diego-sshd.tgz

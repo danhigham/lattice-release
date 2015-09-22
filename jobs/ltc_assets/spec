@@ -1,0 +1,9 @@
+---
+name: ltc_assets
+
+templates: {}
+
+packages:
+  - ltc_assets
+
+properties: {}
