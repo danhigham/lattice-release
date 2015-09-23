@@ -1,1 +1,45 @@
---- {}
+---
+btrfs-progs/btrfs-progs-v4.1.2.tar.gz:
+  object_id: 90facfd1-2499-484b-99f5-87c825d22982
+  sha: 8efb04cfe76e4b24f2892628966b58c97803f452
+  size: 7384520
+busybox/busybox.tar.gz:
+  object_id: 5ab43788-6398-49f6-bc29-21ee838e82cc
+  sha: 6410617b26644ab3fac9372494cabe34e269970c
+  size: 1145751
+consul/consul-template_0.9.0_linux_amd64.tar.gz:
+  object_id: 49d1a0c2-f134-42aa-8d5e-2e0cb858ca36
+  sha: a44e441f9347abe64956e5bb30c4d4b0464d1f73
+  size: 2460384
+consul/consul_0.5.2_linux_amd64.zip:
+  object_id: ad70cffd-5958-4170-ade3-d04004f8b4f0
+  sha: b3ae610c670fc3b81737d44724ebde969da66ebf
+  size: 4803609
+golang/go1.3.1.linux-amd64.tar.gz:
+  object_id: 88f2e71c-0fc3-46ae-af38-a0b7b4d61e51
+  sha: 3af011cc19b21c7180f2604fd85fbc4ddde97143
+  size: 51930765
+golang/go1.4.2.linux-amd64.tar.gz:
+  object_id: 631ce334-928d-4294-bc03-6185f95247c9
+  sha: 5020af94b52b65cc9b6f11d50a67e4bae07b0aff
+  size: 62442704
+iptables/iptables-1.4.21.tar.bz2:
+  object_id: c8dc1904-9a3b-429b-bb8f-44ce62f20810
+  sha: 85d4160537546a23a7e42bc26dd7ee62a0ede4c8
+  size: 547439
+ltc-assets/diego-sshd.tgz:
+  object_id: cee1b1e4-34e2-41df-a3f8-d9f708c0556e
+  sha: 0abbd93ee6cd3fa0cbad2583d5930ccc0d168e18
+  size: 3168042
+ltc-assets/healthcheck.tgz:
+  object_id: d1bf002f-b1d6-47b7-8c2b-2091df2b73b4
+  sha: ac8562db8addf9fcda120a71cd15368aec97123c
+  size: 1719405
+ltc-assets/lattice-cell-helpers.tgz:
+  object_id: 820e0433-c337-4154-84d6-393f0887b48b
+  sha: d51a33358e08c4d5d0ee7a70034d4a42e23664fe
+  size: 7204695
+shadow/shadow-4.2.1.tar.gz:
+  object_id: 9ddc11b1-a5bb-406c-9125-357c8ec9d3a8
+  sha: 1d205418863dd02b2b8af0fa78fcce5d7c848d1f
+  size: 3686676
