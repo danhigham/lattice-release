@@ -1,5 +1,5 @@
 name: lattice
-director_uuid: <-- Directo UUID
+director_uuid: <-- Director UUID
 
 compilation:
   network: ltc-private

@@ -22,3 +22,7 @@ Getting this up and running on AWS generally involve the following steps;
 6. Create two ELBs, one connected to one or more routers for HTTP traffic and
 the other for ssh connections to containers, this one should be connected to the
 SSH proxy instance.
+
+Also, because this release is configure to use the internal consul domain 'cf.internal', you will need to recompile the ltc CLI tool which uses 'dc1.consul'.
+I plan to put modified binaries up at some point or at least allow you to set your
+own.
