@@ -15,7 +15,7 @@ Getting this up and running on AWS generally involve the following steps;
 
 3. Upload a stemcell
 
-4. Upload this release and the latest diego releases
+4. Upload this release and the latest diego release
 
 5. Tailor the manifest and deploy
 
