@@ -4,3 +4,4 @@ blobstore:
   options:
     bucket_name: lattice-release
     region: us-west-1
+final_name: lattice
