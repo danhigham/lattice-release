@@ -1,0 +1,534 @@
+name: lattice
+director_uuid: <-- Directo UUID
+
+compilation:
+  network: ltc-private
+  resource_pool: vms
+  reuse_compilation_vms: true
+  workers: 6
+  cloud_properties:
+    instance_type: m3.xlarge
+    ephemeral_disk: {size: 25_000, type: gp2}
+    availability_zone: <-- az of private network
+
+disk_pools:
+- name: disks
+  disk_size: 20_000
+  cloud_properties: {type: gp2}
+
+jobs:
+
+- name: consul
+  instances: 1
+  networks:
+  - name: ltc-private
+    static_ips:
+    - 10.0.1.10 <-- this is the only IP that needs to be set static, consul server
+  properties:
+    consul:
+      agent:
+        mode: server
+    networks:
+      apps: ltc-private
+  resource_pool: vms
+  persistent_disk_pool: disks
+  templates:
+  - name: consul_agent
+    release: lattice
+  update: {}
+
+- name: nats
+  instances: 1
+  networks:
+  - name: ltc-private
+  properties:
+    networks:
+      apps: ltc-private
+  resource_pool: vms
+  templates:
+  - name: consul_agent
+    release: lattice
+  - name: nats
+    release: lattice
+  update: {}
+
+- name: router
+  instances: 1
+  networks:
+  - name: ltc-private
+  properties:
+    dropsonde:
+      enabled: true
+
+    metron_endpoint:
+      shared_secret: <-- loggeregator shared secret
+
+    consul:
+      agent:
+        services:
+          router:
+            port: 80
+    networks:
+      apps: ltc-private
+  resource_pool: vms
+  templates:
+  - name: consul_agent
+    release: lattice
+  - name: metron_agent
+    release: lattice
+  - name: gorouter
+    release: lattice
+  update: {}
+
+- name: route-emitter
+  instances: 1
+  networks:
+  - name: ltc-private
+  properties:
+    diego:
+      route_emitter:
+        nats:
+          user: nats
+          password: nats
+          machines:
+            - nats-0.node.cf.internal
+        bbs:
+          api_url: http://bbs.service.cf.internal:8889
+
+    networks:
+      apps: ltc-private
+  resource_pool: vms
+  templates:
+  - name: consul_agent
+    release: lattice
+  - name: route_emitter
+    release: diego
+  update: {}
+
+- name: database
+  instances: 3
+  networks:
+  - name: ltc-private
+  properties:
+    consul:
+      diego:
+        etcd:
+          ca_cert:
+          client_cert:
+          client_key:
+          machines: ["etcd.service.cf.internal"]
+          cluster:
+            - name: "database"
+              instances: 3
+          peer_require_ssl: false
+          require_ssl: false
+          server_cert:
+          server_key:
+
+      agent:
+        services:
+          etcd: {}
+    networks:
+      apps: ltc-private
+  resource_pool: vms
+  persistent_disk_pool: disks
+  templates:
+  - name: consul_agent
+    release: lattice
+  - name: etcd
+    release: diego
+  update:
+    serial: true
+    max_in_flight: 1
+
+- name: bbs
+  instances: 1
+  networks:
+  - name: ltc-private
+  properties:
+    diego:
+      bbs:
+        auctioneer:
+          api_url: http://auctioneer.service.cf.internal:9016
+
+        etcd:
+          require_ssl: false
+          machines: ["etcd.service.cf.internal"]
+          ca_cert: NIL
+          client_cert: NIL
+          client_key: NIL
+
+    consul:
+      agent:
+        services:
+          bbs:
+            port: 8889
+    networks:
+      apps: ltc-private
+  resource_pool: vms
+  templates:
+  - name: consul_agent
+    release: lattice
+  - name: bbs
+    release: diego
+  update: {}
+
+- name: auctioneer
+  instances: 1
+  networks:
+  - name: ltc-private
+  properties:
+    diego:
+      auctioneer:
+        etcd:
+          require_ssl: false
+          machines: ["etcd.service.cf.internal"]
+          ca_cert: NIL
+          client_cert: NIL
+          client_key: NIL
+
+        bbs:
+          api_url: http://bbs.service.cf.internal:8889
+
+    consul:
+      agent:
+        services:
+          auctioneer:
+            port: 9016
+
+    networks:
+      apps: ltc-private
+  resource_pool: vms
+  templates:
+  - name: consul_agent
+    release: lattice
+  - name: auctioneer
+    release: diego
+  update: {}
+
+- name: converger
+  instances: 1
+  networks:
+  - name: ltc-private
+  properties:
+    diego:
+      converger:
+        bbs:
+          api_url: http://bbs.service.cf.internal:8889
+
+        etcd:
+          require_ssl: false
+          machines: ["etcd.service.cf.internal"]
+          ca_cert: NIL
+          client_cert: NIL
+          client_key: NIL
+
+    networks:
+      apps: ltc-private
+  resource_pool: vms
+  templates:
+  - name: consul_agent
+    release: lattice
+  - name: converger
+    release: diego
+  update: {}
+
+- name: file_server
+  instances: 1
+  networks:
+  - name: ltc-private
+  properties:
+    diego:
+      file_server:
+        static_directory: /var/vcap/packages/ltc_assets
+
+    consul:
+      agent:
+        services:
+          file_server:
+            port: 8080
+    networks:
+      apps: ltc-private
+  resource_pool: vms
+  persistent_disk_pool: disks
+  templates:
+  - name: consul_agent
+    release: lattice
+  - name: file_server
+    release: diego
+  - name: ltc_assets
+    release: lattice
+  update: {}
+
+- name: loggregator_trafficcontroller
+  instances: 1
+  networks:
+  - name: ltc-private
+  properties:
+    networks:
+      apps: ltc-private
+    cc:
+      srv_api_uri: ""
+    uaa:
+      clients:
+        doppler:
+          secret: PASSWORD
+
+  resource_pool: vms
+  templates:
+  - name: consul_agent
+    release: lattice
+  - name: loggregator_trafficcontroller
+    release: lattice
+  update: {}
+
+- name: doppler
+  instances: 1
+  networks:
+  - name: ltc-private
+  properties:
+    networks:
+      apps: ltc-private
+  resource_pool: vms
+  templates:
+  - name: consul_agent
+    release: lattice
+  - name: doppler
+    release: lattice
+  update: {}
+
+- name: cell
+  instances: 4
+  networks:
+  - name: ltc-private
+  properties:
+    diego:
+      rep:
+        bbs:
+          api_url: http://bbs.service.cf.internal:8889
+        etcd:
+          require_ssl: false
+          machines: ["etcd.service.cf.internal"]
+          ca_cert: NIL
+          client_cert: NIL
+          client_key: NIL
+        zone: z1
+
+    metron_agent:
+      zone: z1
+    garden:
+      disk_quota_enabled: true
+      mount_btrfs_loopback: true
+    networks:
+      apps: ltc-private
+  resource_pool: vms
+  templates:
+  - name: consul_agent
+    release: lattice
+  - name: metron_agent
+    release: lattice
+  - name: garden
+    release: lattice
+  - name: rep
+    release: lattice
+  - name: rootfses
+    release: diego
+  update: {}
+
+- name: receptor
+  instances: 1
+  networks:
+  - name: ltc-private
+  properties:
+    diego:
+      receptor:
+        username: <-- username for receptor
+        password: <-- password for receptor
+        register_with_router: true
+        cors_enabled: true
+        domain_names:
+          - receptor.domain <-- receptor.your-domain-here
+        nats:
+          user: nats
+          password: nats
+          port: 4222
+          machines:
+            - nats-0.node.cf.internal
+
+        bbs:
+          api_url: http://bbs.service.cf.internal:8889
+
+        etcd:
+          require_ssl: false
+          machines: ["etcd.service.cf.internal"]
+          ca_cert: NIL
+          client_cert: NIL
+          client_key: NIL
+
+    consul:
+      agent:
+        services:
+          receptor:
+            port: 8888
+    networks:
+      apps: ltc-private
+  resource_pool: vms
+  templates:
+  - name: consul_agent
+    release: lattice
+  - name: receptor
+    release: diego
+  update: {}
+
+- name: ssh_proxy
+  instances: 1
+  networks:
+  - name: ltc-private
+  properties:
+    diego:
+      ssh_proxy:
+        bbs:
+          api_url: http://bbs.service.cf.internal:8889
+          ca_cert: NIL
+          client_cert: NIL
+          client_key: NIL
+          require_ssl: false
+
+        host_key: |
+          -----BEGIN RSA PRIVATE KEY-----
+
+          -----END RSA PRIVATE KEY-----
+
+        enable_diego_auth: true
+        diego_credentials: <-- receptor username and password joined with a :
+
+    consul:
+      agent:
+        services:
+          ssh_proxy:
+            port: 2222
+    networks:
+      apps: ltc-private
+  resource_pool: vms
+  templates:
+  - name: consul_agent
+    release: lattice
+  - name: ssh_proxy
+    release: diego
+  update: {}
+
+meta:
+  environment: ltc-aws
+  releases:
+  - name: lattice
+    version: latest
+  - name: diego
+    version: latest
+
+networks:
+- name: ltc-private
+  type: manual
+  subnets:
+  - range: 10.0.1.0/24
+    gateway: 10.0.1.1
+    dns: [10.0.0.2]
+    cloud_properties:
+      subnet: <-- subnet of private network
+    reserved: ["10.0.1.2 - 10.0.1.3"]
+    static: ["10.0.1.10 - 10.0.1.20"]
+
+properties:
+
+  system_domain: <-- your domain
+
+  lattice:
+    assets:
+      file_server: file-server.service.cf.internal:8080
+
+  consul:
+    require_ssl: false
+    agent:
+      datacenter: cf
+      servers:
+        lan: ["10.0.1.10"] <-- static ip of consul server
+
+  loggregator_endpoint:
+    shared_secret: <-- loggeregator shared secret
+
+  metron_endpoint:
+    shared_secret: <-- loggeregator shared secret
+
+  metron_agent:
+    zone: z1
+    deployment: lattice
+
+  traffic_controller:
+    zone: z1
+
+  doppler:
+    zone: z1
+
+  doppler_endpoint:
+    shared_secret: <-- loggeregator shared secret
+
+  nats:
+    machines:
+      - nats-0.node.cf.internal
+    debug: false
+    monitor_port: 4221
+    password: nats
+    port: 4222
+    prof_port: 0
+    trace: false
+    user: nats
+
+  router:
+    cipher_suites: null
+    enable_ssl: null
+    enable_routing_api: false
+    requested_route_registration_interval_in_seconds: null
+    route_service_secret: <-- router secret
+    route_service_timeout: null
+    secure_cookies: null
+    ssl_cert: null
+    ssl_key: null
+    ssl_skip_validation: true
+    status:
+      password: router
+      user: router
+
+  etcd:
+    machines: ["etcd.service.cf.internal"]
+
+  diego:
+    ssl:
+      skip_cert_verify: false
+
+  uaa:
+    clients:
+      gorouter:
+        secret: nil
+
+releases:
+- name: diego
+  version: latest
+- name: lattice
+  version: latest
+
+resource_pools:
+- name: vms
+  network: ltc-private
+  stemcell:
+    name: bosh-aws-xen-hvm-ubuntu-trusty-go_agent
+    version: latest
+  cloud_properties:
+    instance_type: m3.xlarge
+    ephemeral_disk: {size: 25_000, type: gp2}
+    availability_zone: <-- az of private nework
+
+update:
+  canaries: 1
+  canary_watch_time: 1000-180000
+  max_in_flight: 50
+  serial: true
+  update_watch_time: 1000-180000
