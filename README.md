@@ -11,7 +11,7 @@ Getting this up and running on AWS generally involve the following steps;
 
 1. Create a VPC with a private and public subnet
 
-2. [Intall microbosh](https://github.com/cloudfoundry/bosh-init)
+2. [Install microbosh](https://github.com/cloudfoundry/bosh-init)
 
 3. Upload a stemcell
 
