@@ -110,21 +110,21 @@ jobs:
   networks:
   - name: ltc-private
   properties:
-    consul:
-      diego:
-        etcd:
-          ca_cert:
-          client_cert:
-          client_key:
-          machines: ["etcd.service.cf.internal"]
-          cluster:
-            - name: "database"
-              instances: 3
-          peer_require_ssl: false
-          require_ssl: false
-          server_cert:
-          server_key:
+    diego:
+      etcd:
+        ca_cert:
+        client_cert:
+        client_key:
+        machines: ["etcd.service.cf.internal"]
+        cluster:
+          - name: "database"
+            instances: 3
+        peer_require_ssl: false
+        require_ssl: false
+        server_cert:
+        server_key:
 
+    consul:
       agent:
         services:
           etcd: {}
