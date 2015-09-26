@@ -325,14 +325,14 @@ jobs:
   templates:
   - name: consul_agent
     release: lattice
-  - name: metron_agent
-    release: lattice
   - name: garden
     release: lattice
   - name: rep
     release: lattice
   - name: rootfses
     release: diego
+  - name: metron_agent
+    release: lattice
   update: {}
 
 - name: receptor
