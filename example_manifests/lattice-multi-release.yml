@@ -417,14 +417,6 @@ jobs:
     release: diego
   update: {}
 
-meta:
-  environment: ltc-aws
-  releases:
-  - name: lattice
-    version: latest
-  - name: diego
-    version: latest
-
 networks:
 - name: ltc-private
   type: manual

@@ -6,19 +6,6 @@ PIDFILE=$RUN_DIR/garden.pid
 DATA_DIR=/var/vcap/data/garden
 LATTICE_CELL_ID=<%= name %>-<%= spec.index %>
 
-<% if_p('garden.http_proxy') do |http_proxy| %>
-	export HTTP_PROXY=<%= http_proxy %>
-	export http_proxy=<%= http_proxy %>
-<% end %>
-<% if_p('garden.https_proxy') do |https_proxy| %>
-	export HTTPS_PROXY=<%= https_proxy %>
-	export https_proxy=<%= https_proxy %>
-<% end %>
-<% if_p('garden.no_proxy') do |no_proxy| %>
-	export NO_PROXY=<%= no_proxy %>
-	export no_proxy=<%= no_proxy %>
-<% end %>
-
 function setup() {
   mkdir -p /var/vcap/sys/log/monit
   exec 1>> /var/vcap/sys/log/monit/garden.out.log
@@ -96,8 +83,8 @@ case $1 in
     export PATH=/var/vcap/packages/shadow/sbin:$PATH
     export PATH=/var/vcap/packages/iptables/sbin:$PATH
     export PATH=/var/vcap/packages/btrfs-progs/bin:$PATH
-		export PATH=/var/vcap/packages/cell-helpers/bin:$PATH
-		export PATH=/var/vcap/packages/garden-linux/bin:$PATH
+    export PATH=/var/vcap/packages/cell-helpers/bin:$PATH
+    export PATH=/var/vcap/packages/garden-linux/bin:$PATH
 
     mkdir -p /var/vcap/data/garden/depot
 
@@ -149,10 +136,7 @@ case $1 in
 
     echo $$ > /var/vcap/sys/run/garden/garden.pid
 
-    mkdir -p $graph_path
-    chmod go-rx $graph_path
-
-		exec tee2metron -dropsondeDestination=127.0.0.1:3457 -sourceInstance=$LATTICE_CELL_ID \
+    exec tee2metron -dropsondeDestination=127.0.0.1:3457 -sourceInstance=$LATTICE_CELL_ID \
     	garden-linux \
       -depot=/var/vcap/data/garden/depot \
       -snapshots="${snapshots_path}" \
@@ -165,7 +149,6 @@ case $1 in
       -denyNetworks=<%= p("garden.deny_networks").join(",") %> \
       -allowNetworks=<%= p("garden.allow_networks").join(",") %> \
       -allowHostAccess=<%= p("garden.allow_host_access") %> \
-      -networkPool=<%= p("garden.network_pool") %> \
       -debugAddr=<%= p("garden.debug_listen_address") %> \
       -rootfs=<%= p("garden.default_container_rootfs") %> \
       -containerGraceTime=<%= p("garden.default_container_grace_time") %> \
@@ -189,9 +172,6 @@ case $1 in
     <% end %> \
     <% if_p("garden.insecure_docker_registry_list") do |list| %> \
       -insecureDockerRegistryList=<%= list.join(',') %> \
-    <% end %> \
-    <% if_p("garden.persistent_image_list") do |list| %> \
-      -persistentImageList=<%= list.join(',') %> \
     <% end %> \
       1>>$LOG_DIR/garden.stdout.log \
       2>>$LOG_DIR/garden.stderr.log
