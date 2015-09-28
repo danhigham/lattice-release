@@ -298,7 +298,7 @@ jobs:
   update: {}
 
 - name: cell
-  instances: 4
+  instances: 1
   networks:
   - name: ltc-private
   properties:
@@ -416,6 +416,20 @@ jobs:
   - name: ssh_proxy
     release: diego
   update: {}
+
+- name: register-ssh-proxy
+  instances: 1
+  lifecycle: errand
+  networks:
+  - name: ltc-private
+  persistent_disk: 0
+  resource_pool: vms
+
+  templates:
+    - name: register_ssh_proxy
+      release: lattice
+    - name: consul_agent
+      release: lattice
 
 networks:
 - name: ltc-private
